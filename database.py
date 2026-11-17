@@ -1,6 +1,5 @@
 import sqlite3
 from pathlib import Path
-from regras import transicao_permitida
 
 bancodir = Path(__file__).resolve().parent / "data"
 bancodir.mkdir(exist_ok=True)
@@ -46,8 +45,6 @@ class Banco:
         return self.cursor.fetchall()
 
     def atualizar(self, status, id, novo_status):
-        if not transicao_permitida(status, novo_status):
-            return False
         self.cursor.execute(
             """UPDATE pedidos set STATUS=? WHERE id=? AND status=?""",
             (novo_status, id, status),

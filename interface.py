@@ -2,8 +2,7 @@ import sqlite3
 import tkinter as tk
 from tkinter import ttk 
 from tkinter import messagebox
-from datetime import datetime
-from regras import validar_pedido
+from regras import cadastrar_pedido, alterar_status
 import csv
 from tkinter import filedialog
 class Interface:
@@ -55,15 +54,10 @@ class Interface:
         
         #print(setor,material,quantidade,prioridade)
         try:
-            setor, material, quantidade = validar_pedido(setor, material, quantidade)
+            cadastrar_pedido(self.banco, setor, material, quantidade, prioridade)
         except ValueError as erro:
             messagebox.showwarning("Atenção", str(erro))
             return
-        status = "Pendente"
-        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        
-        try:
-            self.banco.inserir_tabela(setor,material,quantidade,prioridade,status,data_hora)
         except sqlite3.Error as erro:
                 messagebox.showerror("Erro",f"Nao foi possivel inserir na tabela{erro}")
                 return
@@ -108,7 +102,7 @@ class Interface:
         
         if id_pedido is  None:
             return
-        atualizado=self.banco.atualizar("Pendente",id_pedido,"Em atendimento")
+        atualizado=alterar_status(self.banco,"Pendente",id_pedido,"Em atendimento")
         if atualizado:
             self.pesquisar()
             messagebox.showinfo("Sucesso","Atendimento iniciado")
@@ -119,7 +113,7 @@ class Interface:
 
         if id_pedido is None:
             return
-        atualizado=self.banco.atualizar("Em atendimento",id_pedido,"Atendida")
+        atualizado=alterar_status(self.banco,"Em atendimento",id_pedido,"Atendida")
         if atualizado:
             self.pesquisar()
             messagebox.showinfo("Sucesso","Pedido Concluido")
