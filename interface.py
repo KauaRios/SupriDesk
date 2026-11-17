@@ -26,7 +26,10 @@ class Interface:
         if not caminho:
             return
         try:
-            pedidos=self.banco.listar_pedidos()
+            pedidos=[]
+            for item in self.tabela.get_children():
+                valores=self.tabela.item(item,"values")
+                pedidos.append(valores)
             
             with open(caminho,"w",newline="",encoding="utf-8") as arquivo:
                 escritor=csv.writer(arquivo)
@@ -68,7 +71,7 @@ class Interface:
         self.campo_material.delete(0, "end")
         self.campo_quantidade.delete(0, "end")
         self.prioridade.set("Normal")
-        self.carregar_pedidos()
+        self.pesquisar()
         messagebox.showinfo("Sucesso","Pedido cadastrado com sucesso")
     def criar_tabela(self):
         quadro_tabela = ttk.Frame(self.raiz, padding=(12, 0))
@@ -107,7 +110,7 @@ class Interface:
             return
         atualizado=self.banco.atualizar("Pendente",id_pedido,"Em atendimento")
         if atualizado:
-            self.carregar_pedidos()
+            self.pesquisar()
             messagebox.showinfo("Sucesso","Atendimento iniciado")
         else:
             messagebox.showwarning("Atencão","O pedido precisa estar pendente para iniciar atendimento")
@@ -118,7 +121,7 @@ class Interface:
             return
         atualizado=self.banco.atualizar("Em atendimento",id_pedido,"Atendida")
         if atualizado:
-            self.carregar_pedidos()
+            self.pesquisar()
             messagebox.showinfo("Sucesso","Pedido Concluido")
         else:
             messagebox.showwarning("Atencão","O pedido precisa estar em atendimento para ser concluido")
@@ -150,8 +153,11 @@ class Interface:
     def pesquisar(self):
         texto=self.campo_pesquisa.get()
         status=self.filtro_status.get()
-        
-        pedidos=self.banco.busca(texto,status) 
+        try:
+            pedidos=self.banco.busca(texto,status) 
+        except sqlite3.Error as erro:
+            messagebox.showerror("Erro",f"Nao foi possivel pesquisar pedidos:{erro}")
+            return
         self.tabela.delete(*self.tabela.get_children())
         for pedido in pedidos:
             self.tabela.insert("","end",values=pedido)
