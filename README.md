@@ -44,4 +44,4 @@ O banco de dados é criado automaticamente na pasta `data` caso ela nao exista �
 
 ## Uso de inteligência artificial
 
-Utilizei o ChatGPT para melhorar o posicionamento da interface e me ajudar a entender erros
+Utilizei o ChatGPT para auxiliar no posicionamento da interface e me ajudar a entender erros e auxiliar em testes
