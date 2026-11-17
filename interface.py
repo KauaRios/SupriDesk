@@ -4,6 +4,8 @@ from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
 from regras import validar_pedido
+import csv
+from tkinter import filedialog
 class Interface:
     def __init__(self,banco) -> None:
         self.banco=banco
@@ -15,6 +17,26 @@ class Interface:
         self.criar_filtros()
         self.criar_tabela()
         self.carregar_pedidos()
+    def exportar_csv(self):
+        caminho = filedialog.asksaveasfilename(
+            title="Salvar histórico",
+            defaultextension=".csv",
+            filetypes=[("Arquivo CSV", "*.csv")],
+        )
+        if not caminho:
+            return
+        try:
+            pedidos=self.banco.listar_pedidos()
+            
+            with open(caminho,"w",newline="",encoding="utf-8") as arquivo:
+                escritor=csv.writer(arquivo)
+                escritor.writerow(["ID","Setor","Material","Quantidade","Prioridade","Status","Data e Hora"])
+                escritor.writerows(pedidos)
+            messagebox.showinfo("Sucesso","Arquivo exportado com sucesso")
+        except (OSError,sqlite3.Error) as e:
+            messagebox.showerror("Erro",f"Erro ao exportar arquivo{e}")
+                
+ 
     def obter_id_selecionado(self):
         selecao=self.tabela.selection()
         if not selecao:
@@ -76,6 +98,8 @@ class Interface:
 
         self.botao_concluir=ttk.Button(acoes,text="Concluir atendimento",command=self.concluir_atendimento)
         self.botao_concluir.pack(side="left")
+        self.botao_exportar=ttk.Button(acoes,text="Exportar CSV",command=self.exportar_csv)
+        self.botao_exportar.pack(side="left", padx=(8, 0))
     def iniciar_atendimento(self):
         id_pedido=self.obter_id_selecionado()
         
