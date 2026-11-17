@@ -16,7 +16,7 @@ Na pasta do projeto, execute:
 python main.py
 ```
 
-O banco de dados é criado automaticamente na pasta `data`.
+O banco de dados é criado automaticamente na pasta `data` caso ela nao exista é criada também .
 
 ## Funcionalidades
 
