@@ -9,6 +9,11 @@ O sistema serve para gestão de solicitações de materiais, com histórico pers
 O projeto foi desenvolvido com Python 3.14.10 e usa bibliotecas da biblioteca padrão: Tkinter/ttk, SQLite e CSV. É necessário ter uma instalação do Python com Tkinter disponível.
 
 ## Como executar
+Clone o Projeto com
+```bash
+git clone <URL>
+```
+
 
 Na pasta do projeto, execute:
 
